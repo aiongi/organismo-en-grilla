@@ -1,6 +1,8 @@
+// Nicolás Alongi, octubre de 2021
+
 let inicio = 0;
 let loops = true;
-let colorGrilla = true;
+let colorGrilla = 0;
 let fontSize = 20;
 
 let organismo = {
@@ -67,8 +69,15 @@ let organismo = {
         this.Y.push(nacimientoY);
         this.index++;
 
-        fill(this.color, this.transparencia);
-        stroke(this.color, 5);
+        // selecciona perfil de color elegido al inicio
+        if (colorGrilla == 3) {
+          fill(181, 40, 40, this.transparencia);
+          stroke(181, 40, 40, 5);
+        } else {
+          fill(this.color, this.transparencia);
+          stroke(this.color, 5);
+        }
+
         strokeWeight(4);
         rectMode(CENTER);
         rect(nacimientoX, nacimientoY, this.diametro);
@@ -98,9 +107,9 @@ let estructura = {
       this.b = this.base;
     }
 
-    // gradiente de tono atado a la cantidad de líneas
+    // gradiente de tono atado a la cantidad de líneas dibujadas
     if (this.counter % this.velocidadDeDibujo == 0) {
-      if (colorGrilla) {
+      if (colorGrilla == 0) {
         if (this.r == this.tope && this.g != this.base) {
           this.g -= this.gradient;
           this.g = constrain(this.g, this.base, this.tope);
@@ -120,8 +129,12 @@ let estructura = {
           this.r += this.gradient;
           this.r = constrain(this.r, this.base, this.tope);
         }
+        // colores hardcodeados
+      } else if (colorGrilla == 3) {
+        this.r = 47;
+        this.g = 47;
+        this.b = 175;
       } else {
-        // color hardcodeado
         this.r = 255;
         this.g = 0;
         this.b = 0;
@@ -162,10 +175,15 @@ function draw() {
 }
 
 function mousePressed() {
+  // da inicio al programa
   if (mouseY > width * 0.05) {
     if (inicio == 0) {
       background(255);
-      if (mouseY < height / 2) colorGrilla = false;
+      if (mouseY < height / 2) {
+        colorGrilla = 1;
+      } else if (mouseY > height * 0.9) {
+        colorGrilla = 3;
+      }
     }
 
     slider.hide();
@@ -180,8 +198,11 @@ function keyPressed() {
     loops = !loops;
   }
 
-  if (!loops) noLoop();
-  else loop();
+  if (!loops) {
+    noLoop();
+  } else {
+    loop();
+  }
 }
 
 function drawWords(x) {
